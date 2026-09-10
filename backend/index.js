@@ -51,11 +51,6 @@ app.get('/getChatsPorUsuario', async function(req,res){
 })
 
 
-
-
-
-
-
 //   ---------------  REGISTRO Y LOGIN  --------------------------
 
 app.post('/register', async function(req,res) {
@@ -76,18 +71,36 @@ app.post('/register', async function(req,res) {
     } 
 })
 
-
-//sin terminaR
-
 app.post('/login', async function(req,res) {
-    console.log(req.body) //Los pedidos post reciben los datos del req.body
+    console.log(req.body) 
     let respuesta =  await realizarQuery(`
         Select  *  From Usuarios_tpi2
         Where nombre = "${req.body.nombre}" AND contrasenia = "${req.body.contrasenia}"
         `)
     if (respuesta.length == 0) {
+        res.send({mensaje: "No se encontró el usuario ingresado"}) 
+    } else {
+        res.send({mensaje: "Usuario encontrado"})
+    } 
+})
 
-        res.send({mensaje: "algo incorrecto"}) 
+// creacion de un chat de a 2
+app.post('/chatnuevo', async function(req,res) {
+    console.log(req.body) 
+    let respuesta =  await realizarQuery(`
+        Select  id_usuario  From Usuarios_tpi2
+        Where mail = "${req.body.mail}"
+        `)
+    if (respuesta.length == 0) {
+       await realizarQuery(`
+        INSERT INTO Chats_tpi2(nombre_chat, foto) VALUES 
+        ("${req.body.nombre_chat}", "${req.body.foto}")
+
+        INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_conversacion) VALUES 
+        ("${req.body.nombre_chat}", "${req.body.foto}")
+    `)
+        let respuesta2 = await realizarQuery(`SELECT id_usuario FROM Usuarios_tpi2 WHERE nombre="${req.body.nombre}"`)
+        res.send({mensaje: "Usuario agregado", ok: true, id_user: respuesta2[0].id_usuario}) 
     } else {
         res.send({mensaje: "Este dato ya existe", ok: false})
     } 
