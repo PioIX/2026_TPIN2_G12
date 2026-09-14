@@ -4,7 +4,7 @@
 var express = require('express'); //Tipo de servidor: Express
 var bodyParser = require('body-parser'); //Convierte los JSON
 var cors = require('cors');
-const { realizarQuery } = require('./modulos/mysql');
+
 const { Server } = require("socket.io");
 
 
@@ -21,6 +21,7 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const { Server } = require("socket.io");
+const { realizarQuery } = require('./modulos/mysql');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -105,7 +106,7 @@ app.get('/', function(req, res){
 // Chats_tpi2
 // Usuarios_tpi2
 // Mensajes_tpi2
-
+ 
 app.get('/getUsuarios', async function(req,res){
     let respuesta = await realizarQuery("SELECT * FROM Usuarios_tpi2");  
     console.log({respuesta})  
@@ -124,6 +125,11 @@ app.get('/getMensajes', async function(req,res){
 
 app.get('/getChatsPorUsuario', async function(req,res){
     let respuesta = await realizarQuery("SELECT * FROM Chats_por_usuario_tpi2");    
+    res.send(respuesta);
+})
+
+app.get('/getlol', async function(req,res){
+    let respuesta = await realizarQuery(`SELECT id_usuario FROM Usuarios_tpi2  where nombre = "b" ` );    
     res.send(respuesta);
 })
 
@@ -164,22 +170,43 @@ app.post('/login', async function(req,res) {
 // creacion de un chat de a 2
 app.post('/chatnuevo', async function(req,res) {
     console.log(req.body) 
-    let respuesta =  await realizarQuery(`
+    let id_usuario2 =  await realizarQuery(`
         Select  id_usuario  From Usuarios_tpi2
         Where mail = "${req.body.mail}"
         `)
-    if (respuesta.length == 0) {
-       await realizarQuery(`
-        INSERT INTO Chats_tpi2(nombre_chat, foto) VALUES 
-        ("${req.body.nombre_chat}", "${req.body.foto}")
 
-        INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_conversacion) VALUES 
-        ("${req.body.nombre_chat}", "${req.body.foto}")
-    `)
-        let respuesta2 = await realizarQuery(`SELECT id_usuario FROM Usuarios_tpi2 WHERE nombre="${req.body.nombre}"`)
-        res.send({mensaje: "Usuario agregado", ok: true, id_user: respuesta2[0].id_usuario}) 
-    } else {
-        res.send({mensaje: "Este dato ya existe", ok: false})
+    let foto_usuario2 = await realizarQuery(`
+        Select  foto  From Usuarios_tpi2
+        Where mail = "${req.body.mail}"
+      `)
+    if (id_usuario2.length != 0) {
+        await realizarQuery(`
+        INSERT INTO Chats_tpi2(nombre_chat, foto) VALUES 
+        ("${req.body.nombre_chat}", "${req.body.foto_usuario2[0].foto}")
+      `)
+
+        let id_chat = await realizarQuery(`
+          SELECT id_chat FROM Chats_tpi2 WHERE nombre_chat = "${req.body.nombre_chat}"
+        `)
+      
+        if (id_chat.length != 0) {   
+          
+          for (let i = 0; i < 2; i++) {
+            let respuesta1 = await realizarQuery(`
+            INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
+            (${id_usuario2[0].id_usuario}, ${id_chat[0].id_chat})
+            `)
+
+            let respuesta2 = await realizarQuery(`
+            INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
+            (${req.body.id_usuario}, ${id_chat})
+            `)
+          }
+        }
+
+        res.send({mensaje: "Chat agregado", ok: true}) 
+      }else {
+        res.send({mensaje: "Este dato ya existe", ok: false}) 
     } 
 })
 
