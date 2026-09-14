@@ -175,6 +175,7 @@ app.post('/login', async function(req,res) {
 
 // creacion de un chat de a 2
 app.post('/chatnuevo', async function(req,res) {
+  try {
     console.log(req.body) 
     let id_usuario2 =  await realizarQuery(`
         Select  id_usuario  From Usuarios_tpi2
@@ -210,56 +211,80 @@ app.post('/chatnuevo', async function(req,res) {
         res.send({mensaje: "Chat agregado", ok: true}) 
       }else {
         res.send({mensaje: "Este dato ya existe", ok: false}) 
-    } 
+    } } catch {
+      res.send({mensaje: "Error del try"})
+    }
+
 })
-
-
 
 // creacion chat grupal
 app.post('/gruponuevo', async function(req,res) {
+  try {
     console.log(req.body) 
+    await realizarQuery(`
+      INSERT INTO Chats_tpi2(nombre_chat, foto) VALUES 
+      ("${req.body.nombre_chat}", "${req.body.foto}")
+    `)
+    let id_chat = await realizarQuery(`SELECT id_chat FROM Chats_tpi2 WHERE nombre_chat = "${req.body.nombre_chat}"`)
+    let respuesta2 = await realizarQuery(`
+      INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
+      (${req.body.id_usuario}, ${id_chat[0].id_chat})
+    `)
+        
+    res.send({mensaje: "Chat agregado", ok: true}) 
+  } catch {
+    res.send({mensaje: "Error del try"})
+  }
 
-    let usuarios = []
+})
 
+
+
+// añadir usuario a grupo
+app.post('/metergente', async function(req,res) {
+  try {
+    console.log(req.body) 
+    let id_chat = null
     let id_usuario2 =  await realizarQuery(`
         Select  id_usuario  From Usuarios_tpi2
         Where mail = "${req.body.mail}"
       `)
-
-    let foto_usuario2 = await realizarQuery(`
-        Select  foto  From Usuarios_tpi2
-        Where mail = "${req.body.mail}"
-      `)
+      console.log(id_usuario2)
     if (id_usuario2.length != 0) {
-        await realizarQuery(`
-        INSERT INTO Chats_tpi2(nombre_chat, foto) VALUES 
-        ("${req.body.nombre_chat}", "${foto_usuario2[0].foto}")
+      id_chat = await realizarQuery(`SELECT id_chat FROM Chats_tpi2 WHERE nombre_chat = "${req.body.nombre_chat}"`)
+      console.log(id_chat)
+    }
+
+    if (id_chat.length != 0) {   
+      let respuesta1 = await realizarQuery(`
+        Select  id_usuario  From Chats_por_usuario_tpi2
+        Where id_chat = ${id_chat[0].id_chat} and id_usuario = ${id_chat[0].id_chat}
       `)
-
-        let id_chat = await realizarQuery(`
-          SELECT id_chat FROM Chats_tpi2 WHERE nombre_chat = "${req.body.nombre_chat}"
+      console.log(respuesta1)
+      if (respuesta1.length == 0){
+      let respuesta2 = await realizarQuery(`
+        INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
+          (${id_usuario2[0].id_usuario}, ${id_chat[0].id_chat})
         `)
-      
-        if (id_chat.length != 0) {   
-          
-          for (let i = 0; i < 2; i++) {
-            let respuesta1 = await realizarQuery(`
-            INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
-            (${id_usuario2[0].id_usuario}, ${id_chat[0].id_chat})
-            `)
-
-            let respuesta2 = await realizarQuery(`
-            INSERT INTO Chats_por_usuario_tpi2(id_usuario, id_chat) VALUES 
-            (${req.body.id_usuario}, ${id_chat[0].id_chat})
-            `)
-          }
-        }
-
-        res.send({mensaje: "Chat agregado", ok: true}) 
+        res.send({mensaje: "usuario agregado"})
       }else {
-        res.send({mensaje: "Este dato ya existe", ok: false}) 
-    } 
+        res.send({mensaje: "Error, ya esta añadido"})
+      }}  } catch {
+        res.send({mensaje: "Error del try"})
+      }
 })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // historial
@@ -282,4 +307,6 @@ app.get('/gethistorialchat', async function(req,res){
         WHERE Mensajes_tpi2.id_chat = ${req.body.id_chat};
         `);    
     res.send(respuesta);
+
+    
 })
