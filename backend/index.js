@@ -250,6 +250,7 @@ app.post('/metergente', async function(req,res) {
         Where mail = "${req.body.mail}"
       `)
       console.log(id_usuario2)
+
     if (id_usuario2.length != 0) {
       id_chat = await realizarQuery(`SELECT id_chat FROM Chats_tpi2 WHERE nombre_chat = "${req.body.nombre_chat}"`)
       console.log(id_chat)
@@ -258,7 +259,7 @@ app.post('/metergente', async function(req,res) {
     if (id_chat.length != 0) {   
       let respuesta1 = await realizarQuery(`
         Select  id_usuario  From Chats_por_usuario_tpi2
-        Where id_chat = ${id_chat[0].id_chat} and id_usuario = ${id_chat[0].id_chat}
+        Where id_chat = ${id_chat[0].id_chat} and id_usuario = ${id_usuario2[0].id_usuario}
       `)
       console.log(respuesta1)
       if (respuesta1.length == 0){
@@ -269,7 +270,9 @@ app.post('/metergente', async function(req,res) {
         res.send({mensaje: "usuario agregado"})
       }else {
         res.send({mensaje: "Error, ya esta añadido"})
-      }}  } catch {
+      }} else {
+        res.send({mensaje: "Error, no existe ese grupo"})
+      } } catch {
         res.send({mensaje: "Error del try"})
       }
 })
