@@ -3,23 +3,29 @@
 import { useState } from 'react';
 
 export default function CondicionalTernario() {
-  const [registrado, setRegistrado] = useState(false);
+  const [registrar, setRegistrar] = useState(false);
+
   return (
     <div>
-      {registrado ? (
+      <button onClick={() => setRegistrar(false)}>Iniciar Sesión</button>
+      <button onClick={() => setRegistrar(true)}>Registrarse</button>
+
+      {registrar ? (
         <div>
-          <h2>¡Bienvenido!</h2>
-          <p>Estás registrado en el sistema</p>
-          <button onClick={() => setRegistrado(false)}>
-            Cerrar Sesión
-          </button>
+          <h2>Registro</h2>
+          <p>Complete los siguientes campos:</p>
+          <input> Username</input>
+          <input>Mail</input>
+          <input>Password</input>
+          <input>foto de contacto</input>
+
         </div>
 
 
       ) : (
         <div>
-          <h2>Registro</h2>
-          <p>Por favor, registrese en el sistema</p>
+          <h2>Inicio de sesión</h2>
+          <p>Ingrese sus datos: </p>
 
           <button onClick={() => setRegistrado(true)}>
             Registrarse
