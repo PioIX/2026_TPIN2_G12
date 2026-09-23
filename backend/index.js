@@ -140,6 +140,8 @@ app.get('/getusuarioschatespec', async function(req,res){
 })
 
 
+
+
 //   ---------------  REGISTRO Y LOGIN  --------------------------
 
 app.post('/register', async function(req,res) {
@@ -292,7 +294,7 @@ app.post('/metergente', async function(req,res) {
 
 // historial
 
-app.get('/getchatsdeusuario', async function(req,res){
+app.post('/getchatsdeusuario', async function(req,res){
     let respuesta = await realizarQuery(`
         SELECT nombre_chat FROM Chats_tpi2
         INNER JOIN Chats_por_usuario_tpi2 ON Chats_por_usuario_tpi2.id_chat = Chats_tpi2.id_chat
@@ -302,7 +304,7 @@ app.get('/getchatsdeusuario', async function(req,res){
     res.send(respuesta);
 })
 
-app.get('/gethistorialchat', async function(req,res){
+app.post('/gethistorialchat', async function(req,res){
     let respuesta = await realizarQuery(`
         SELECT texto, fecha, nombre, Usuarios_tpi2.id_usuario FROM Mensajes_tpi2
         INNER JOIN Chats_tpi2 ON Chats_tpi2.id_chat = Mensajes_tpi2.id_chat
@@ -312,4 +314,14 @@ app.get('/gethistorialchat', async function(req,res){
     res.send(respuesta);
 
     
+})
+
+app.post('/getchatitem', async function(req,res){
+    let respuesta = await realizarQuery(`
+        SELECT Chats_tpi2.foto, nombre_chat FROM Chats_tpi2
+        INNER JOIN Chats_por_usuario_tpi2 ON Chats_por_usuario_tpi2.id_chat = Chats_tpi2.id_chat
+        INNER JOIN Usuarios_tpi2 ON Usuarios_tpi2.id_usuario = Chats_por_usuario_tpi2.id_usuario
+        WHERE Usuarios_tpi2.id_usuario = ${req.body.id_usuario};
+        `);    
+    res.send(respuesta);
 })
