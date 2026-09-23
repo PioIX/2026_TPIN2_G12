@@ -63,6 +63,7 @@ io.on("connection", (socket) => {
       socket.leave(req.session.room);
     }
     req.session.room = data.room;
+    console.log("Join Room: " + req.session.room)
     socket.join(req.session.room);
 
     io.to(req.session.room).emit("chat-messages", {
@@ -77,8 +78,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
-    io.to(req.session.room).emit("newMessage", {
-      room: req.session.room,
+    console.log(data)
+    console.log("Room: " + data.room)
+    io.to(data.room).emit("newMessage", {
+      room: data.room,
       message: data.message,
     });
   });
@@ -316,12 +319,20 @@ app.post('/gethistorialchat', async function(req,res){
     
 })
 
+// NO SER HACE EN CHAT ITEM ESTO SE HACE EN CHAT LIST DESPUES CHATLIST LE ASIGNA A CADA ITEM ESTO QUE ESTOY HACIUENDO
+let respuestasChatItem = []
 app.post('/getchatitem', async function(req,res){
     let respuesta = await realizarQuery(`
         SELECT Chats_tpi2.foto, nombre_chat FROM Chats_tpi2
         INNER JOIN Chats_por_usuario_tpi2 ON Chats_por_usuario_tpi2.id_chat = Chats_tpi2.id_chat
         INNER JOIN Usuarios_tpi2 ON Usuarios_tpi2.id_usuario = Chats_por_usuario_tpi2.id_usuario
         WHERE Usuarios_tpi2.id_usuario = ${req.body.id_usuario};
-        `);    
-    res.send(respuesta);
+        `);
+
+        res.send(respuesta)
+    /*for (let i = 0; respuesta.length; i++) {
+      respuestasChatItem.push(respuesta[i]);
+    }   
+    res.send(respuestasChatItem)
+    */
 })
