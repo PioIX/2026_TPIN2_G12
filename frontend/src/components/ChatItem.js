@@ -4,8 +4,10 @@ export default function ChatItem({foto, nombre, onClick}) {
 
     
     return (
-        <button>
-        Click me!
-        </button>
+        <div>
+            <img src={foto}></img>
+            <h5>{nombre}</h5>
+            <button onClick={onClick}>Ir al chat</button>
+        </div>
     );
 }

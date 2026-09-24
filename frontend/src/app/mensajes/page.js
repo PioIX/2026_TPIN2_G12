@@ -4,6 +4,8 @@ import {useSocket} from "@/hooks/useSocket";
 import { useEffect } from "react";
 import { useState } from "react";
 
+const conversacion = localStorage.getItem("conv")
+
 export default function SocketPage() {
 
     const { socket, isConnected } = useSocket();
@@ -39,7 +41,7 @@ export default function SocketPage() {
             //Aquí entrará cuando reciba un evento
             if (isConnected) {
                 console.log("conectado")
-                socket.emit("joinRoom", {room: 1})
+                socket.emit("joinRoom", {room: conversacion})
             }        
     }, [isConnected]);
 
