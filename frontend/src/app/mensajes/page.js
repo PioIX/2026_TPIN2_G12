@@ -3,8 +3,10 @@
 import {useSocket} from "@/hooks/useSocket";
 import { useEffect } from "react";
 import { useState } from "react";
+import { LocalStorage } from "node-localstorage";
 
-const conversacion = localStorage.getItem("conv")
+const conversacion = parseInt(localStorage.getItem("conv"))
+console.log("conv: ", conversacion)
 
 export default function SocketPage() {
 
@@ -25,7 +27,9 @@ export default function SocketPage() {
         });
 
         socket.on("newMessage", (data) => {
+            console.log("recibido")
             console.log(data);
+            setMensaje((prev) => [...prev, data])
             
         });
 
@@ -42,6 +46,7 @@ export default function SocketPage() {
             if (isConnected) {
                 console.log("conectado")
                 socket.emit("joinRoom", {room: conversacion})
+                console.log("sala:", conversacion)
             }        
     }, [isConnected]);
 
@@ -56,7 +61,7 @@ export default function SocketPage() {
         }
 
     function sumarUno() {
-        socket.emit("sendMessage", {message: "hola", room: 1})
+        socket.emit("sendMessage", {message: "hola", room: parseInt(conversacion)})
     }
 
         
