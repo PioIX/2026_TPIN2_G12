@@ -21,6 +21,7 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const { Server } = require("socket.io");
+const { realizarQuery } = require('./modulos/mysql');
 
 const app = express();
 const port = process.env.PORT || 4000;

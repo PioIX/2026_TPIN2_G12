@@ -12,13 +12,13 @@ export default function HomePage() {
   const [foto, setFoto] = useState("");
   const [mail, setMail] = useState("");
   const [contrasenia, setContrasenia] = useState("");
-  const [usu, setUsu] = useState("");
+  const [nombre, setNombre] = useState("");
 
 
-  const getFoto = (event) => {setFoto(event.target.value)}
-  const getMail = (event) => {setMail(event.target.value)}
-  const getContrasenia = (event) => {setContrasenia(event.target.value)}
-  const getUsu = (event) => {setUsu(event.target.value)}
+  const getFoto = (event) => { setFoto(event.target.value) }
+  const getMail = (event) => { setMail(event.target.value) }
+  const getContrasenia = (event) => { setContrasenia(event.target.value) }
+  const getNombre = (event) => { setNombre(event.target.value) }
 
   async function iniciarSesion() {
     if (mail == "" || contrasenia == "") {
@@ -36,7 +36,9 @@ export default function HomePage() {
 
       if (res.ok == true) {
         id_user = res.id_user
-        localStorage.setItem("id_user", id_user)
+        //localStorage.setItem("id_user", id_user)
+        alert("yey")
+
       } else {
         alert("Usuario o contraseña incorrectos")
       }
@@ -45,22 +47,26 @@ export default function HomePage() {
 
   async function crearCuenta() {
 
-    if (usu == "" || mail == "" || contrasenia == "" || foto == "") {
+    if (nombre == "" || mail == "" || contrasenia == "" || foto == "") {
       alert("Todos los campos deben estar completos")
     } else {
+      if (foto == ""){
+        foto = "https://i.redd.it/h5abcfxalwtb1.png"
+      }
 
       let response = await fetch("http://localhost:4000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ usu, mail, contrasenia, foto })
+        body: JSON.stringify({ nombre, mail, contrasenia, foto })
       })
       let res = await response.json()
 
       if (res.ok == true) {
+        alert("u uwa wa uwa")
         id_user = res.id_user
-        localStorage.setItem("id_user", id_user)
+        //localStorage.setItem("id_user", id_user)
       } else {
         alert("Ya existe la cuenta")
       }
@@ -80,7 +86,7 @@ export default function HomePage() {
           <h2>Registro</h2>
           <p>Complete los siguientes campos:</p>
 
-          <Input text="Ej: Sayu.Crack" id="username" onChange={getUsu}></Input>
+          <Input text="Ej: Sayu.Crack" id="username" onChange={getNombre}></Input>
           <Input text="sayu@gmail.com" id="mail" onChange={getMail}></Input>
           <Input text="papita123" id="contraseña" onChange={getContrasenia}></Input>
           <Input id="fotoContacto" text="link" onChange={getFoto}></Input>
