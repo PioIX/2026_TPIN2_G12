@@ -3,17 +3,19 @@
 import {useSocket} from "@/hooks/useSocket";
 import { useEffect } from "react";
 import { useState } from "react";
-import { LocalStorage } from "node-localstorage";
-
-const conversacion = parseInt(localStorage.getItem("conv"))
-console.log("conv: ", conversacion)
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function SocketPage() {
 
     const { socket, isConnected } = useSocket();
     const [mensaje, setMensaje] = useState([])
     const [contador, setContador] = useState(0) 
-
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const conversacion = parseInt(searchParams.get("conv"))
+    const user = parseInt(searchParams.get("user"))
+    const [texto, setTexto] = useState("")
 
     useEffect(() => {
         if (!socket) return;
@@ -29,8 +31,7 @@ export default function SocketPage() {
         socket.on("newMessage", (data) => {
             console.log("recibido")
             console.log(data);
-            setMensaje((prev) => [...prev, data])
-            
+            setMensaje((prev) => [...prev, data.message])
         });
 
         socket.on("pingAll", (data) => {
@@ -55,13 +56,12 @@ export default function SocketPage() {
         console.log(mensaje)
     }, [mensaje])
 
-
     function pingAll() {
         socket.emit("pingAll", { msg: "Hola desde mi compu" });
         }
 
-    function sumarUno() {
-        socket.emit("sendMessage", {message: "hola", room: parseInt(conversacion)})
+    function mandarMensaje() {
+        socket.emit("sendMessage", {message: texto, room: parseInt(conversacion)})
     }
 
         
@@ -81,12 +81,14 @@ export default function SocketPage() {
                 Enviar ping a todos
             </button>
 
-            <button onClick={sumarUno}>
-                prueba
+            <input type="text" value={texto} onChange={(e) => setTexto(e.target.value)}></input>
+
+            <button onClick={mandarMensaje}>
+                mandar mensaje
             </button>
 
             
-            {mensaje.map((texto, index) =>  <p key={index}> mensaje numero: {index + 1}: {texto}</p>)}
+            {mensaje.map((texto, index) =>  <p key={index}> mensaje numero: {index + 1} de {user}: {texto}</p>)}
 
             <p> Contador: {contador}</p>
         </>
