@@ -2,12 +2,14 @@
 
 
 
-
+import PopUp from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 import ChatList from "@/components/ChatList";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import getMail from "@/mensajes/page.js";
 
 export default function ContactosPage() {
     const router = useRouter()
@@ -20,11 +22,22 @@ export default function ContactosPage() {
         router.push("/mensajes?conv="+idChat+"&user="+id_user)
     }
 
+    async function nuevoChat(){
+        if (getMail = "") {
+        const verify = false
+        } else {
+        const verify = true  
+        }
+
+    }
+
     return (
         <>
             <h1>Contactos</h1>
 
             <ChatList id_log={id_user} botonOnClick={clickChat}></ChatList>
+
+            <Button text="Nuevo chat" onClick={nuevoChat}></Button>
         </>
     )
 }

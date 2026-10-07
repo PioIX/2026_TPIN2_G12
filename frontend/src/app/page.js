@@ -90,7 +90,6 @@ export default function HomePage() {
           <Input text="sayu@gmail.com" id="mail" onChange={getMail}></Input>
           <Input text="papita123" id="contraseña" onChange={getContrasenia}></Input>
           <Input id="fotoContacto" text="link" onChange={getFoto}></Input>
-
           <Button text="Validar" onClick={crearCuenta}></Button>
         </div>
 
