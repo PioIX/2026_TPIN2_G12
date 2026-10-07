@@ -15,6 +15,7 @@ export default function ContactosPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const id_user = 2//parseInt(searchParams.get("id_user"))
+    const [popupOpen, setpopupOpen] = useState(false)
 
     function clickChat(idChat) {
         console.log(idChat)
@@ -22,14 +23,20 @@ export default function ContactosPage() {
         router.push("/mensajes?conv="+idChat+"&user="+id_user)
     }
 
-    async function nuevoChat(){
+    function nuevoChat(){
         if (getMail = "") {
-        const verify = false
+        const setpopupOpen = true
         } else {
-        const verify = true  
+        const setpopupOpen = false  
         }
 
     }
+
+    function nuevoGrupo(){
+
+    }
+
+    //seguir investigando popUp
 
     return (
         <>
@@ -38,6 +45,14 @@ export default function ContactosPage() {
             <ChatList id_log={id_user} botonOnClick={clickChat}></ChatList>
 
             <Button text="Nuevo chat" onClick={nuevoChat}></Button>
+
+            <Popup
+                buttons={[<input></input>, 'cancel']}
+            ></Popup>
+
+            <Button text="Nuevo grupo" onClick={nuevoGrupo}></Button>
+
+
         </>
     )
 }
