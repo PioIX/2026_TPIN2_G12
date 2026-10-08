@@ -10,12 +10,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import getMail from "@/mensajes/page.js";
+import { Mali } from 'next/font/google';
 
 export default function ContactosPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const id_user = 2//parseInt(searchParams.get("id_user"))
-    const [popupOpen, setpopupOpen] = useState(false)
+    const [popupOpenChat, setpopupOpenChat] = useState(false)
+    const [popupOpenGrupo, setpopupOpenGrupo] = useState(false)
 
     function clickChat(idChat) {
         console.log(idChat)
@@ -23,20 +25,20 @@ export default function ContactosPage() {
         router.push("/mensajes?conv="+idChat+"&user="+id_user)
     }
 
-    function nuevoChat(){
-        if (getMail = "") {
-        const setpopupOpen = true
-        } else {
-        const setpopupOpen = false  
-        }
+    //seguir investigando popUp
 
+    function nuevoChat(){
+        if(getMail = "" || getMail = null) {
+        verificar = false
+        } else   {
+        verificar = true
     }
+        
+    
 
     function nuevoGrupo(){
-
+        const hola = 1
     }
-
-    //seguir investigando popUp
 
     return (
         <>
@@ -44,13 +46,21 @@ export default function ContactosPage() {
 
             <ChatList id_log={id_user} botonOnClick={clickChat}></ChatList>
 
-            <Button text="Nuevo chat" onClick={nuevoChat}></Button>
+            <button onClick={() => setpopupOpenChat(true)}>Open dialog</button>
+             <PopUp popupOpenChat={popupOpenChat} closePopUp={()=>setpopupOpenChat(false)}>
+                <h1>Crear chat</h1>
+                <h2>Ingrese el mail</h2>
+                <input id={idInput} placeholder={text} type="text" onChange={onChange}></input>
+                <button onClick={() =>(setpopupOpenChat(false))}> </button>
+            </PopUp>
 
-            <Popup
-                buttons={[<input></input>, 'cancel']}
-            ></Popup>
-
-            <Button text="Nuevo grupo" onClick={nuevoGrupo}></Button>
+            <button onClick={() => setpopupOpenGrupo(true)}>Open dialog</button>
+            <PopUp popupOpenChat={popupOpenChat} closePopUp={()=>setpopupOpenChat(false)}>
+                <h1>Crear grupo</h1>
+                <h2>Ingrese los mails</h2>
+                <input id={idInput} placeholder={text} type="text" onChange={onChange}></input>
+                <button onClick={() =>(setpopupOpenGrupo(false))}> </button>
+            </PopUp>
 
 
         </>
