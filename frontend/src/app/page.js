@@ -51,7 +51,7 @@ export default function HomePage() {
       alert("Todos los campos deben estar completos")
     } else {
       if (foto == ""){
-        foto = "https://i.redd.it/h5abcfxalwtb1.png"
+        const foto = "https://i.redd.it/h5abcfxalwtb1.png"
       }
 
       let response = await fetch("http://localhost:4000/register", {

@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { lol } from "@/componentes/message"
+import Message from "@/componentes/Message.js";
+import "./message.css";
 
 export default function SocketPage() {
 
@@ -64,6 +65,21 @@ export default function SocketPage() {
     function mandarMensaje() {
         socket.emit("sendMessage", {message: texto, room: parseInt(conversacion)})
     }
+
+    useEffect(() => {
+    async function cargarMensajes() {
+        {
+            const response = await fetch(
+                `http://localhost:4000/mensajes/conversacion`
+            );
+
+            const data = await response.json();
+            setMensaje(data);
+        } 
+    }
+        cargarMensajes();
+
+    }, [conversacion]);
 
         
 
