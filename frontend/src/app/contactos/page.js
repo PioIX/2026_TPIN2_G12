@@ -14,7 +14,9 @@ export default function ContactosPage() {
     
     const router = useRouter()
     const searchParams = useSearchParams()
-    const id_user = 2//parseInt(searchParams.get("id_user"))
+    //const id_us = 2
+    const id_user = parseInt(searchParams.get("id_user"))
+
     const [popupOpenChat, setpopupOpenChat] = useState(false)
     const [popupOpenGrupo, setpopupOpenGrupo] = useState(false)
     const [mail, setMail] = useState("")

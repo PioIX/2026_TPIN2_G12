@@ -10,12 +10,13 @@ export default function HomePage() {
   let id_user = -1
   const [registrar, setRegistrar] = useState(false);
 
-  const [foto, setFoto] = useState("");
+  let [foto, setFoto] = useState("");
   const [mail, setMail] = useState("");
   const [contrasenia, setContrasenia] = useState("");
   const [nombre, setNombre] = useState("");
 
   const router = useRouter();
+  
 
   const getFoto = (event) => { setFoto(event.target.value) }
   const getMail = (event) => { setMail(event.target.value) }
@@ -40,10 +41,10 @@ export default function HomePage() {
 
       if (res.ok == true) {
         id_user = res.id_user
-        //localStorage.setItem("id_user", id_user)
+        
         alert("yey")
 
-        router.push("/mensajes");
+        router.push(`/contactos?id_user=${id_user}`);
 
       } else {
         alert("Usuario o contraseña incorrectos")
@@ -69,11 +70,12 @@ export default function HomePage() {
       let res = await response.json()
 
       if (res.ok == true) {
-        alert("u uwa wa uwa")
         id_user = res.id_user
-        //localStorage.setItem("id_user", id_user)
 
-        router.push("/mensajes");
+        alert("u uwa wa uwa")
+
+        router.push(`/contactos?id_user=${id_user}`);
+
 
       } else {
         alert("Ya existe la cuenta")
