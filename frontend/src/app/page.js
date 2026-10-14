@@ -51,7 +51,7 @@ export default function HomePage() {
       alert("Todos los campos deben estar completos")
     } else {
       if (foto == ""){
-        foto = "https://i.redd.it/h5abcfxalwtb1.png"
+        const foto = "https://i.redd.it/h5abcfxalwtb1.png"
       }
 
       let response = await fetch("http://localhost:4000/register", {
@@ -90,7 +90,6 @@ export default function HomePage() {
           <Input text="sayu@gmail.com" id="mail" onChange={getMail}></Input>
           <Input text="papita123" id="contraseña" onChange={getContrasenia}></Input>
           <Input id="fotoContacto" text="link" onChange={getFoto}></Input>
-
           <Button text="Validar" onClick={crearCuenta}></Button>
         </div>
 
