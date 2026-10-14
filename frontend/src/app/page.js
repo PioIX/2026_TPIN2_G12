@@ -3,22 +3,27 @@
 import { useState } from 'react';
 import Button from './componentes/Button';
 import Input from './componentes/Input';
+import { useRouter } from "next/navigation";
 
 
 export default function HomePage() {
   let id_user = -1
   const [registrar, setRegistrar] = useState(false);
 
-  const [foto, setFoto] = useState("");
+  let [foto, setFoto] = useState("");
   const [mail, setMail] = useState("");
   const [contrasenia, setContrasenia] = useState("");
   const [nombre, setNombre] = useState("");
 
+  const router = useRouter();
+  
 
   const getFoto = (event) => { setFoto(event.target.value) }
   const getMail = (event) => { setMail(event.target.value) }
   const getContrasenia = (event) => { setContrasenia(event.target.value) }
   const getNombre = (event) => { setNombre(event.target.value) }
+
+
 
   async function iniciarSesion() {
     if (mail == "" || contrasenia == "") {
@@ -36,8 +41,10 @@ export default function HomePage() {
 
       if (res.ok == true) {
         id_user = res.id_user
-        //localStorage.setItem("id_user", id_user)
+        
         alert("yey")
+
+        router.push(`/contactos?id_user=${id_user}`);
 
       } else {
         alert("Usuario o contraseña incorrectos")
@@ -46,12 +53,11 @@ export default function HomePage() {
   }
 
   async function crearCuenta() {
-
     if (nombre == "" || mail == "" || contrasenia == "" || foto == "") {
       alert("Todos los campos deben estar completos")
     } else {
-      if (foto == ""){
-        const foto = "https://i.redd.it/h5abcfxalwtb1.png"
+      if (foto == "") {
+        foto = "https://i.redd.it/h5abcfxalwtb1.png"
       }
 
       let response = await fetch("http://localhost:4000/register", {
@@ -64,9 +70,13 @@ export default function HomePage() {
       let res = await response.json()
 
       if (res.ok == true) {
-        alert("u uwa wa uwa")
         id_user = res.id_user
-        //localStorage.setItem("id_user", id_user)
+
+        alert("u uwa wa uwa")
+
+        router.push(`/contactos?id_user=${id_user}`);
+
+
       } else {
         alert("Ya existe la cuenta")
       }
