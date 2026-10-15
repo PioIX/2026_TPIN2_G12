@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import Message from "@/componentes/Message.js";
+
 import "./message.css";
 
 export default function SocketPage() {

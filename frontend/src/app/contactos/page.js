@@ -1,14 +1,13 @@
 "use client"
 
-import PopUp from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 import ChatList from "@/components/ChatList";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { mail } from '@/app/page.js';
-
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 
 export default function ContactosPage() {
     
@@ -21,6 +20,9 @@ export default function ContactosPage() {
     const [popupOpenGrupo, setpopupOpenGrupo] = useState(false)
     const [mail, setMail] = useState("")
     const [error, setError] = useState("")
+    const [nombreGrupo, setNombreGrupo] = useState("")
+    const [mailsGrupo, setMailsGrupo] = useState("")
+    const [foto, setFoto] = useState("")
 
     function clickChat(idChat) {
         console.log(idChat)
@@ -56,14 +58,17 @@ export default function ContactosPage() {
         };
     }
     
-
-
+    const getnombreGrupo = (event) => { setNombreGrupo(event.target.value) }
+    const getmailsGrupo = (event) => { setMailsGrupo(event.target.value) }
+    const getfoto = (event) => { setFoto(event.target.value) }
+    
 //------------------------------------------------------------------------------------------------//
 
     async function nuevoGrupo() {
     if (
-        nombreGrupo() === "" ||
-        mailsGrupo() === ""
+        getnombreGrupo() === "" ||
+        getmailsGrupo() === ""
+        
     ) {
         setError("Ingrese el nombre del grupo y los mails");
         return;
@@ -71,7 +76,7 @@ export default function ContactosPage() {
 
     const mails = mailsGrupo
         .split(",")
-        .map(mail => mail.trim());
+        .map(mail => mail);
 
      {
         const response = await fetch("http://localhost:4000/contactos", {
@@ -81,9 +86,9 @@ export default function ContactosPage() {
             },
             body: JSON.stringify({
                 id_user,
-                nombre: nombreGrupo.trim(),
+                nombre: nombreGrupo,
                 mails,
-                foto: fotoGrupo
+                foto: foto
             })
         });
 
@@ -107,19 +112,19 @@ export default function ContactosPage() {
         <button onClick={() => setpopupOpenChat(true)}>Nuevo chat</button>
         <button onClick={() => setpopupOpenGrupo(true)}>Nuevo grupo</button>
 
-        <Popup open={popupOpenChat} onClose={() => setpopupOpenChat(false)} modal>
+        <Popup isOpen={popupOpenChat} onClose={() => setpopupOpenChat(false)} >
             <h2>Crear chat</h2>
             <input placeholder="mail del usuario" value={mail} onChange={(e) => setMail(e.target.value)} />
-            <p>{errorChat}</p>
+            <p>{error}</p>
             <button onClick={nuevoChat}>Crear</button>
         </Popup>
 
-        <Popup open={popupOpenGrupo} onClose={() => setpopupOpenGrupo(false)} modal>
+        <Popup isOpen={popupOpenGrupo} onClose={() => setpopupOpenGrupo(false)} modal>
         <h2>Crear grupo</h2>
             <input placeholder="nombre del grupo" value={nombreGrupo} onChange={(e) => setNombreGrupo(e.target.value)} />
             <input placeholder="mails separados por comas" value={mailsGrupo} onChange={(e) => setMailsGrupo(e.target.value)} />
-            <input placeholder="link de la foto" value={fotoGrupo} onChange={(e) => setFotoGrupo(e.target.value)} />
-            <p>{errorGrupo}</p>
+            <input placeholder="link de la foto" value={foto} onChange={(e) => setFotoGrupo(e.target.value)} />
+            <p>{error}</p>
             <button onClick={nuevoGrupo}>Crear grupo</button>
         </Popup>
         </>
